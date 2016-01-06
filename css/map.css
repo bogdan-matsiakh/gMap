@@ -1,0 +1,17 @@
+#map {
+	width: 800px;
+	height: 600px;
+	float: left;
+}
+
+.clear {
+	clear: both;
+}
+
+#menu {
+	position: absolute;
+    top: 30px;
+    right: 20px;
+    max-width: 300px;
+    background-color: rgba(210,210,210,0.5);
+}
