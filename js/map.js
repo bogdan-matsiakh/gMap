@@ -2,7 +2,7 @@ $(document).ready(function () {
 	function initListeners() {
 		$(document).on('getMarkers:click', _showMarkers);
 		$(document).on('marker:added', _markerAdded);
-		$(document).on('marker:remove', _markerRemove);
+		// $(document).on('marker:remove', _markerRemove);
 	}
 
 	function _showMarkers() {
@@ -21,6 +21,7 @@ $(document).ready(function () {
 		polygon.setMap(map);
 		polygons.push(polygon);
 		polygon.index = polygons.indexOf(polygon);
+		$(document).trigger('polygon:added', polygon);
 	}
 
 	function _createPolygon(coords) {
@@ -45,7 +46,7 @@ $(document).ready(function () {
 	}
 
 	var mapWorker = new DigitalUkraine.MapWorker(),
-		menu = new DigitalUkraine.Menu(),
+		menu,
 		polygons = [],
 		map;
 	
@@ -56,6 +57,7 @@ $(document).ready(function () {
 	});
 	
 	map = mapWorker.getMap();
+	menu = new DigitalUkraine.Menu(map);
 
 	menu.init();
 	

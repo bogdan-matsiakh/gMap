@@ -49,6 +49,7 @@ if (!window.DigitalUkraine.MapWorker) window.DigitalUkraine.MapWorker = function
 			if (args.marker === undefined) {
 				throw "Missing parameter";
 			}
+			$(document).trigger('marker:remove', args.marker);
 			_markers[args.marker.index].setMap(null);
 			delete _markers[args.marker.index];
 		},
