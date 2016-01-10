@@ -23,20 +23,22 @@ if (!window.DigitalUkraine.MapWorker) window.DigitalUkraine.MapWorker = function
 			infoWindow.open(_map, marker);
 		},
 		_placeMarker = function (args) {
-			if ((args.position === undefined) ||
-				(args.icon === undefined) ||
-				(args.title === undefined) ||
-				(args.description === undefined)) {
-				throw "Missing parameter";
-			}
+			// if ((args.position === undefined)
+			//  // ||
+			// 	// (args.title === undefined) ||
+			// 	// (args.description === undefined)) 
+			// {
+			// 	throw "Missing parameter";
+			// }
 			var marker = new google.maps.Marker({
 					map: _map,
 					position: args.position,
-					icon: args.icon,
-					title: args.title
+					// icon: args.icon,
+					title: args.title || 'title',
+					draggable: true
 				});
 			marker.clickListener = google.maps.event.addListener(marker, 'click', function () {
-				_showMarkerInfo(marker, args.description);
+				_showMarkerInfo(marker, args.description || 'test info');
 			});
 			_markers.push(marker);
 			marker.index = _markers.indexOf(marker);

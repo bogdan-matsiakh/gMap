@@ -12,6 +12,14 @@
 	position: absolute;
     top: 30px;
     right: 20px;
-    max-width: 300px;
+    width: 300px;
     background-color: rgba(210,210,210,0.5);
+}
+
+i {
+	cursor: pointer;
+}
+
+ul li {
+	list-style: none;
 }
