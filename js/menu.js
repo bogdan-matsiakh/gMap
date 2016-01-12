@@ -35,7 +35,13 @@ if (!window.DigitalUkraine.Menu) window.DigitalUkraine.Menu = function (map, map
 				google.maps.event.addListener(path, 'insert_at', (function(index) {
 					console.log('insert_at', index, path.getAt(index));
 					// this._insertMarkerAt(index);
-					mapWorker.placeMarker(path.getAt(index));
+					activePolygon.isPainted(false);
+					mapWorker.placeMarker({
+						position: {
+							lat: path.getAt(index).G,
+							lng: path.getAt(index).K
+						}
+					});
 				}).bind(path));
 
 				google.maps.event.addListener(path, 'remove_at', (function(){
@@ -111,19 +117,15 @@ if (!window.DigitalUkraine.Menu) window.DigitalUkraine.Menu = function (map, map
 
 	function _init(map) {
 		$(document).on('marker:added', _onMarkerAdded);
-		$(document).on('polygon:added', _onPolygonAdded);
 		$(document).on('marker:remove', _onMarkerRemove);
+		
 		scope.polygons = ko.observableArray([]);
 		ko.applyBindings(scope);
 	}
-	function _onGetMarkerButtonClick() {
-		$(document).trigger('getMarkers:click');
-	}
 
 	function _onMarkerRemove(e, marker) {
-		scope.polygons()[activePolygon.index].removeMarker(marker);
+		activePolygon.removeMarker(marker);
 	}
-
 
 	function _onMarkerAdded(e, marker) {
 		var polygonLength = scope.polygons().length;
@@ -136,14 +138,6 @@ if (!window.DigitalUkraine.Menu) window.DigitalUkraine.Menu = function (map, map
 				marker: marker
 			}));
 		}
-	}
-
-	function _onPolygonAdded(e, polygon) {
-
-	}
-
-	function _getCreatePolygonHTML() {
-		
 	}
 	
 	function _getMarkerText(marker) {
