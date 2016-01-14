@@ -8,11 +8,11 @@ if (!window.DigitalUkraine.Menu) window.DigitalUkraine.Menu = function (map, map
 		this.area = null;
 		this.title = ko.observable('polygon ' + (scope.polygons().length));
 		
-		this.paintPolygon = function() {
+		this.paint = function() {
 			var coords = [],
 				area;
 
-			this.clearPolygon();
+			this.clear();
 			
 			this.markers().forEach(function(marker) {
 				coords.push(marker.position);
@@ -27,13 +27,9 @@ if (!window.DigitalUkraine.Menu) window.DigitalUkraine.Menu = function (map, map
 				fillOpacity: 0.35,
 				editable: true
 			});
-			google.maps.event.addListener(this.area, 'dragend', function(){
-			  console.log('dragend', arguments);
-			});
 			this.area.getPaths().forEach((function(path, index){
 
 				google.maps.event.addListener(path, 'insert_at', (function(index) {
-					console.log('insert_at', index, path.getAt(index));
 					// this._insertMarkerAt(index);
 					activePolygon.isPainted(false);
 					mapWorker.placeMarker({
@@ -57,14 +53,14 @@ if (!window.DigitalUkraine.Menu) window.DigitalUkraine.Menu = function (map, map
 			}).bind(this));
 			this.area.setMap(map);
 		}
-		this.clearPolygon = function() {
+		this.clear = function() {
 			if (this.area) {
 				this.area.setMap(null);
 			}
 			this.isPainted(false);
 		};
 		this.editPolygon = function() {
-			console.log('edit');
+			this.isPainted(false);
 		}
 		this.addMarker = function(marker) {
 			marker.indexPol = this.markers().length;
@@ -73,17 +69,17 @@ if (!window.DigitalUkraine.Menu) window.DigitalUkraine.Menu = function (map, map
 			this.markers.push(marker);
 			
 			google.maps.event.addListener(marker, "dragend", (function(event) {
-				this.paintPolygon();
+				this.paint();
 			}).bind(this));
 		};
 		this.removeMarker = function(marker) {
 			this.markers.splice(marker.indexPol, 1);
 			marker.setMap(null);
 			
-			this.clearPolygon();
+			this.clear();
 			
 			if (this.markers().length >=3) {
-				this.paintPolygon();
+				this.paint();
 			}
 		};
 		this._removeAllMarkers = function() {
@@ -91,7 +87,7 @@ if (!window.DigitalUkraine.Menu) window.DigitalUkraine.Menu = function (map, map
 				marker.setMap(null);	
 			});
 			this.markers = ko.observableArray([]);
-			this.clearPolygon();
+			this.clear();
 		}
 		this._refreshMarkers = function() {
 			this._removeAllMarkers();
@@ -100,19 +96,62 @@ if (!window.DigitalUkraine.Menu) window.DigitalUkraine.Menu = function (map, map
 			}).bind(this));
 		}
 		this._insertMarkerAt = function(index) {
-			var position;
-			console.log(this.area.getPaths(index));
-			console.log(this.area.getPaths(index).getAt(index));
+			var position,
+				marker;
+			
 			this.area.getPaths().forEach(function(path, index) {
 				position = path.getAt(index);
 			});
-			var marker = mapWorker.placeMarker({
+			marker = mapWorker.placeMarker({
 				position: position
 			});
 			this.addMarker(marker);
 		}
 		activePolygon = this;
 		this.addMarker(cfg.marker);
+
+		this.sortCoordinatesClockwise = function() {
+			var coords = [],
+				bottomLeft,
+				topRight;
+			
+			this.markers().forEach(function(marker) {
+				coords.push(marker.position);
+			});
+			bottomLeft = this._getBottomLeftCoord(coords);
+			// bottomLeft = this._getBottomLeftCoord(coords);
+		};
+
+		this._getBottomLeftCoord = function(coords) {
+			var bottomLeft = coords[0];
+			
+			coords.forEach(function(coord) {
+				console.log('coords', coord.lat(), coord.lng());
+				if (coord.lat() < bottomLeft.lat()) {
+					bottomLeft = coord;
+				} else if (coord.lat() === bottomLeft.lat()) {
+					// if (coord.lng()
+				}
+			});
+			return bottomLeft;
+		};
+
+		this._getTopRightCoord = function() {
+			var topRight = coords[0];
+			
+			coords.forEach(function(coord) {
+				console.log('coords', coord.lat(), coord.lng());
+				if (coord.lat() > bottomLeft.lat()) {
+					bottomLeft = coord;
+				} else if (coord.lat() === bottomLeft.lat()) {
+					// if (coord.lng()
+				}
+			});
+			return bottomLeft;
+		};
+		function distance(point1, point2) {
+			return Math.sqrt((point1.lat() - point2.lat())^2 + (point1.lng() - point2.lng())^2);
+		}
 	}
 
 	function _init(map) {

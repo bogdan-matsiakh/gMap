@@ -27,12 +27,15 @@
     <script type="text/html" id="polygon-template">
         <li data-bind="ifnot: isPainted" class="list-group-item">
             <ul class="list-group" data-bind="template: { name: 'marker-template', foreach: markers, as: 'marker' }"></ul>
-            <button class="button" data-bind="click: paintPolygon, visible: markers().length >= 3">Paint</button>
-            <button class="button" data-bind="click: clearPolygon, visible: isPainted">Clear</button>
+            <button class="button" data-bind="click: paint, visible: markers().length >= 3">Paint</button>
+            
+
+            <button class="button" data-bind="click: sortCoordinatesClockwise">Sort</button>
         </li>
         <li class="list-group-item" data-bind="if: isPainted">
             <div data-bind="text: title"></div>
             <button class="button" data-bind="click: editPolygon">Edit</button>
+            <button class="button" data-bind="click: clear">Clear</button>
         </li>
     </script>
 
